@@ -1,0 +1,208 @@
+/* Styling the body with a grid background */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+background-image: url("background-dashboard.png");
+background-repeat: no-repeat;
+background-size: cover;
+background-position: center center;
+background-attachment: fixed;
+min-height: 100vh;
+margin: 0;
+}
+/* logo and text    */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: Arial, sans-serif;
+  margin-left: 15px;
+}
+
+.logo h1 {
+  background-color: #ff3700;
+  color: black;
+  padding: 10px 15px;
+  margin: 0;
+  font-size: 24px;
+  line-height: 1;
+  border-radius: 4px;
+}
+
+.logo p {
+  margin: 0;
+  font-size: 25px;
+  color: white;
+}
+/* Navigation bar styling */
+nav {
+  display: flex;
+  align-items: center; /* Vertically align all elements */
+  font-family: Arial, sans-serif; /* Clean, modern font */
+  width: 100%;
+  background-color: black;
+}
+nav ul {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  gap: 60px;
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+nav ul li a {
+  color: white; /* White text for contrast */
+  text-decoration: none;
+  font-size: 18px;
+  padding: 10px 15px;
+  position: relative; /* For underline animation */
+  transition: color 0.3s ease; /* Smooth color transition */
+  text-transform: capitalize; /* Normalize text case */
+}
+nav ul li a::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: white; /* White underline */
+  transition: width 0.3s ease; /* Smooth underline animation */
+}
+nav ul li a:hover::after {
+  width: 100%; /* Expand underline on hover */
+}
+/* New line from here */
+
+
+/* Main container - centers the form */
+.parking-booking-container {
+  max-width: 480px;           /* Keeps form reasonably narrow */
+  width: 100%;
+  margin: 40px auto;          /* Centers horizontally + some top/bottom space */
+}
+
+/* Form section styling */
+.booking-form-section {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.06);
+  padding: 2.5rem 2rem;
+  overflow: hidden;
+}
+
+/* Heading */
+.booking-form-section h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #0f172a;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+/* Vehicle count select */
+.form-group select.dropdown {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #fff;
+  color: #0f172a;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #64748b 50%), linear-gradient(135deg, #64748b 50%, transparent 50%);
+  background-position: calc(100% - 18px) calc(50% - 2px), calc(100% - 12px) calc(50% - 2px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  transition: all 0.2s ease;
+}
+
+.form-group select.dropdown:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.form-group select.dropdown option {
+  color: #0f172a;
+}
+/* Form groups */
+.form-group {
+  margin-bottom: 0.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.55rem;
+  font-weight: 500;
+  color: #334155;
+  font-size: 0.95rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* Special case for readonly selected spot */
+#selectedSpotDisplay {
+  background-color: #f8fafc;
+  color: #64748b;
+  cursor: default;
+}
+
+/* Date & Time row */
+.form-row.date-time-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 480px) {
+  .form-row.date-time-group {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+}
+
+/* Submit button */
+.btn-primary {
+  width: 100%;
+  padding: 1rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  margin-top: 1.5rem;
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+

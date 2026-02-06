@@ -1,0 +1,385 @@
+   /* Styling the body with a grid background */
+   * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html {
+        scroll-behavior: smooth;
+    }     
+   /* body {
+        background-image: url('land_photo/landing.png') !important;
+        background-repeat: no-repeat !important;
+        background-size: cover !important;
+        background-position: center center !important;
+    } */
+     /* logo and text    */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: Arial, sans-serif;
+      margin-left: 15px;
+    }
+
+    .logo h1 {
+      background-color:#ff3700;
+      color: black;
+      padding: 10px 15px;
+      margin: 0;
+      font-size: 24px;
+      line-height: 1;
+      border-radius: 4px;
+    }
+
+    .logo p {
+      margin: 0;
+      font-size: 25px;
+      color: white;
+    }
+        /* Navigation bar styling */
+    .navbar {
+      display: flex;
+      justify-content: space-between; /* Distribute logo, nav-links, and login-signin */
+      align-items: center; /* Vertically align all elements */
+      font-family: Arial, sans-serif; /* Clean, modern font */
+      width: 100%;
+      margin: 0 auto; /* Center the navbar */
+      background-color: black;
+    }
+
+    /* Styling the navigation bar container */
+     .nav-links {
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40%;
+        border-radius: 18px;
+        gap: 30px; /* Even spacing between links */
+    }
+
+    .nav-links a {
+      color: white; /* White text for contrast */
+      text-decoration: none;
+      font-size: 18px;
+      padding: 10px 15px;
+      position: relative; /* For underline animation */
+      transition: color 0.3s ease; /* Smooth color transition */
+      text-transform: capitalize; /* Normalize text case */
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: 0;
+      left: 0;
+      background-color: white; /* White underline */
+      transition: width 0.3s ease; /* Smooth underline animation */
+    }
+
+    .nav-links a:hover::after {
+      width: 100%; /* Expand underline on hover */
+    }
+
+    .nav-links a:hover {
+      color: white; /* Slightly lighter white on hover */
+    }
+/* Login */
+        .login-signin a {
+            background-color: #e74c3c;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 0 10px;
+            text-decoration: none;
+            color: black;
+        }
+
+        .login-signin a:hover {
+            background-color: #c0392b;
+        }
+
+        /* Main content styling */
+        .landing{
+        background-image: url('land_photo/landing.png') !important;
+        background-repeat: no-repeat !important;
+        background-size: cover !important;
+        background-position: center center !important;
+        }
+        .main-content {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 20px;
+            color: rgb(255, 255, 255);
+        }
+        .left-section img{
+            width: 200px; 
+            height: auto; 
+            margin-bottom: 12px;
+        }
+        .left-section {
+            text-align: center;
+
+        }
+
+        .left-section h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .left-section .p1 {
+            font-size: 1.7em;
+            margin-bottom: 20px;
+            padding: 10px;
+            /* background-color: black; */
+            color: #ffffff;
+            border-radius: 18px;
+            width: 60%;
+            margin-left: 110px;
+            font-weight: bold;
+        }
+        .left-section .p2 {
+            font-size: 1.7em;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: black;
+            color: white;
+        }
+        .find-parking-btn {
+            background-color: #ff1900;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .find-parking-btn:hover {
+            background-color: #c0392b;
+        }
+
+        /* Feature cards styling */
+        .features {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+        }
+
+        .feature-card {
+            background-color: #ecf0f1;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            width: 25%;
+        }
+        .feature-card p{
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .feature-card img {
+            width: 90px;
+            height: 90px;
+        }
+
+        /* Styling the services section */
+    .services-section {
+      padding: 60px 20px;
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+    }
+
+    /* Catchy heading */
+    .services-section h2 {
+      font-size: 36px;
+      color: white; /* Dark blue for smart-tech theme */
+      margin-bottom: 40px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Container for service cards */
+    .services-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Individual service card */
+    .service-card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 280px;
+      padding: 20px;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Hover effect for cards */
+    .service-card:hover {
+      transform: translateY(-10px); /* Lift-up effect */
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Glow effect */
+    }
+
+    /* Icon styling */
+    .service-card img {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 15px;
+    }
+
+    /* Card heading */
+    .service-card h3 {
+      font-size: 20px;
+      color: #1a2a44; /* Dark blue */
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    /* Card description */
+    .service-card p {
+      font-size: 16px;
+      color: #555;
+      line-height: 1.5;
+    }
+    .contact-section {
+       /* Dark gradient for futuristic feel */
+      padding: 60px 20px;
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      color: white;
+      position: relative;
+      overflow: hidden;
+
+      background-image: url('land_photo/background-landing.jpeg') !important;
+        background-repeat: no-repeat !important;
+        background-size: cover !important;
+        background-position: center center !important;
+    }
+
+    /* Animated background effect */
+    .contact-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(255, 0, 255, 0.2) 10%, transparent 10.01%);
+      background-size: 20px 20px;
+      opacity: 0.3;
+      z-index: 0;
+    }
+
+    /* Heading */
+    .contact-section h2 {
+      font-size: 36px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 40px;
+      color: #ffffff;
+      text-shadow: 0 0 10px rgba(255, 0, 255, 0.7); /* Neon glow */
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Container for developers */
+    .developers-container {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Individual developer card */
+    .developer-card {
+      background: linear-gradient(135deg, #1a2a44 0%, #2c3e50 100%); /* Semi-transparent background */
+      border: 1px solid rgba(255, 0, 255, 0.5); /* Magenta border */
+      border-radius: 15px;
+      padding: 20px;
+      width: 370px;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      backdrop-filter: blur(5px); /* Frosted glass effect */
+    }
+
+    /* Hover effect for developer cards */
+    .developer-card:hover {
+      transform: translateY(-10px) scale(1.05); /* Lift-up and slight scale */
+      box-shadow: 0 0 20px rgba(255, 165, 0, 0.7); /* Orange neon glow */
+      border-color: #FFA500; /* Orange border on hover */
+    }
+
+    /* Developer picture */
+    .developer-card img {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      margin-bottom: 15px;
+      border: 2px solid rgba(255, 0, 255, 0.5);
+      transition: border-color 0.3s ease;
+    }
+
+    .developer-card:hover img {
+      border-color: #FFA500;
+    }
+
+    /* Developer name */
+    .developer-card h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #ffffff;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    }
+
+    /* Social links container */
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    /* Individual social link */
+    .social-link {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 8px;
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .social-link:hover {
+      background: rgba(255, 165, 0, 0.3);
+      transform: scale(1.1);
+    }
+
+    .social-link img {
+      width: 40px;
+      height: 40px;
+      filter: brightness(1.2);
+    }
+
+    .social-link a {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 12px;
+      display: block;
+      margin-top: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }

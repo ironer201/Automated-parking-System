@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="new_dashboard.css" />
+    <title>Spacio Parking</title>
+  </head>
+  <body>
+    <nav>
+      <div class="logo">
+        <a href="#" aria-label="Spacio Parking home">
+          <img
+            src="logo-removebg-preview.png"
+            alt="Spacio Parking logo"
+            style="height: 48px; width: auto"
+          />
+        </a>
+      </div>
+
+      <ul>
+        <li><a href="owner.html">Home</a></li>
+        <li><a href="#">Map</a></li>
+        <li><a href="new_dashboard.html">Dashboard</a></li>
+        <li><a href="#">Setting</a></li>
+      </ul>
+    </nav>
+    <div class="container" id="container">
+      <div class="left-side" id="left-side">
+        <div class="option-tab" id="option-tab">
+          <div class="option-list">
+            <button id="profilebtn" class="options">Profile</button>
+            <button id="carinfo" class="options">Car Information</button>
+            <button id="ownerhistorybtn" class="options">Owner History</button>
+            <button id="bookinghistorybtn" class="options">
+              Booking History
+            </button>
+            <button id="analyticsbtn" class="options">Analytics</button>
+          </div>
+        </div>
+      </div>
+      <div class="right-side" id="right-side">
+        <div class="title">
+          <h2 id="title">Profile</h2>
+        </div>
+        <div class="block" id="block">
+          <div class="profile" id="profile">
+                    <p class="profile-option">Name: <span id="name"></span></p>
+                    <p class="profile-option">Email: <span id="email"></span></p>
+                    <p class="profile-option">Phone: <span id="phone"></span></p>
+                    <p class="profile-option">Present Address <span id="address"></span></p>
+                    <p class="profile-option">Gender: <span id="gender"></span></p>
+                    <p class="profile-option">Occupation: <span id="occupation"></span></p>
+          </div>
+          <!-- profile -->
+           <div class="carInfo" id="carInfo">
+                    <p id="carName" class="carinfo-option">Car Name: </p>
+                    <p id="modelName" class="carinfo-option">Model Name: </p>
+                    <p id="carColor" class="carinfo-option">Car Color: </p>
+                    <p id="numberPlate" class="carinfo-option">Number Plate</p>
+                    <p id="CarOwnerName" class="carinfo-option">Car Owner name: </p>
+           </div>
+           <!-- car information -->
+           <div class="ownerhis" id="ownerhis">
+                <table class="ownerhis">
+                  <thead>
+                    <tr>
+                      <th>Order</th>
+                      <th>Service</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr>
+                      <td>#003</td>
+                      <td>Brake Pad Replacement</td>
+                      <td>25 Aug 2025</td>
+                    </tr>
+                    <tr>
+                      <td>#004</td>
+                      <td>Engine Diagnostics Check</td>
+                      <td>02 Sep 2025</td>
+                    </tr>
+                  </tbody>
+                </table>
+           </div>
+           <!-- owner history -->
+            <div class="ownerhis" id="booking">
+                <table class="ownerhis">
+                  <thead>
+                    <tr>
+                      <th>Booking No</th>
+                      <th>Name</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr>
+                      <td>#003</td>
+                      <td>Brake Pad Replacement</td>
+                      <td>25 Aug 2025</td>
+                    </tr>
+                    <tr>
+                      <td>#004</td>
+                      <td>Engine Diagnostics Check</td>
+                      <td>02 Sep 2025</td>
+                    </tr>
+                  </tbody>
+                </table>
+           </div>
+           <!-- booking -->
+            <div class="analytics" id="analytics">
+                <div class="row">
+                  <span>Total Income</span>
+                  <span>৳ 25,000</span>
+                </div>
+
+                <div class="row">
+                  <span>Total Spend</span>
+                  <span>৳ 12,000</span>
+                </div>
+
+                <div class="row">
+                  <span>Total Time Spent</span>
+                  <span>15 hrs</span>
+                </div>
+
+                <div class="row">
+                  <span>Total Time Used by Driver</span>
+                  <span>10 hrs</span>
+                </div>
+
+                <div class="row">
+                  <span>Total Orders Received</span>
+                  <span>85</span>
+                </div>
+
+                <div class="row">
+                  <span>Total Booking Number</span>
+                  <span>60</span>
+                </div>
+              </div>
+              <!-- analytic section -->
+
+        </div>
+      </div>
+    </div>
+    <script type="module" src="new_dashboard.js"></script>
+  </body>
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+</head>
+<body>
+    <style>
+        :root {
+            --bg-1: #0f172a;
+            --bg-2: #1e293b;
+            --acc-1: #22d3ee;
+            --acc-2: #a78bfa;
+            --acc-3: #34d399;
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+        }
+        * { box-sizing: border-box }
+        html, body { height: 100% }
+        body {
+            margin: 0;
+            color: var(--text);
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+            background: radial-gradient(1200px 800px at 80% -10%, #1b2742 10%, transparent 60%),
+                                    radial-gradient(1000px 600px at -10% 110%, #152136 10%, transparent 60%),
+                                    linear-gradient(135deg, var(--bg-1), var(--bg-2));
+            overflow-x: hidden;
+        }
+        .grid {
+            position: fixed; inset: 0; pointer-events: none; opacity: .15;
+            background-image:
+                linear-gradient(transparent 23px, rgba(255,255,255,.04) 24px),
+                linear-gradient(90deg, transparent 23px, rgba(255,255,255,.04) 24px);
+            background-size: 24px 24px;
+        }
+        .wrap {
+            min-height: 100dvh;
+            display: grid;
+            place-items: center;
+            padding: 56px 20px;
+            position: relative;
+        }
+        .card {
+            width: 100%;
+            max-width: 720px;
+            padding: 28px;
+            border-radius: 20px;
+            background: rgba(15, 23, 42, .6);
+            border: 1px solid rgba(148, 163, 184, .15);
+            box-shadow:
+                0 10px 30px rgba(2, 6, 23, .6),
+                inset 0 0 0 1px rgba(255,255,255,.04);
+            backdrop-filter: blur(10px);
+            transform: translateY(8px);
+            animation: rise .6s ease-out forwards;
+        }
+        @keyframes rise { to { transform: translateY(0) } }
+        .header {
+            display: flex; align-items: center; gap: 18px; margin-bottom: 16px;
+        }
+        .avatar {
+            width: 72px; height: 72px; border-radius: 50%;
+            position: relative; flex: none; display: grid; place-items: center;
+            background:
+                conic-gradient(from 0turn, var(--acc-1), var(--acc-2), var(--acc-3), var(--acc-1));
+            padding: 2px;
+            animation: spin 6s linear infinite paused;
+        }
+        .card:hover .avatar { animation-play-state: running }
+        @keyframes spin { to { transform: rotate(1turn) } }
+        .avatar > .ring {
+            width: 100%; height: 100%; border-radius: 50%;
+            background: linear-gradient(180deg, rgba(15,23,42,.9), rgba(15,23,42,.6));
+            display: grid; place-items: center; overflow: hidden;
+        }
+        .avatar img {
+            width: 100%; height: 100%; object-fit: cover; display: none;
+        }
+        .initials {
+            font-weight: 700; letter-spacing: .5px; color: var(--text); font-size: 24px;
+            background: linear-gradient(180deg, #fff, #cbd5e1);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+        }
+        h1 {
+            margin: 0; font-size: clamp(26px, 2.8vw, 36px); line-height: 1.15;
+        }
+        h1 .emph {
+            background: linear-gradient(120deg, var(--acc-1), var(--acc-2) 50%, var(--acc-3));
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+        }
+        p.meta { margin: 6px 0 0; color: var(--muted) }
+        .actions {
+            margin-top: 18px; display: flex; flex-wrap: wrap; gap: 12px;
+        }
+        .btn {
+            appearance: none; border: 0; cursor: pointer; text-decoration: none;
+            padding: 12px 16px; border-radius: 12px; font-weight: 600;
+            transition: transform .08s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
+            display: inline-flex; align-items: center; gap: 10px;
+        }
+        .btn:active { transform: translateY(1px) }
+        .btn.primary {
+            color: #0b1324; background: linear-gradient(135deg, #5eead4, #60a5fa 60%, #c084fc);
+            box-shadow: 0 8px 20px rgba(99,102,241,.35);
+        }
+        .btn.ghost {
+            color: var(--text); background: rgba(148,163,184,.12); border: 1px solid rgba(148,163,184,.2);
+        }
+        .badges { margin-left: auto; display: flex; gap: 8px; align-items: center }
+        .badge {
+            font-size: 12px; padding: 6px 10px; color: #0b1324; border-radius: 999px;
+            background: linear-gradient(135deg, #a7f3d0, #93c5fd);
+        }
+        .section {
+            margin-top: 12px; display: grid; gap: 10px; grid-template-columns: 1fr; 
+        }
+        .panel {
+            padding: 16px; border-radius: 14px; background: rgba(15, 23, 42, .55);
+            border: 1px solid rgba(148, 163, 184, .15);
+        }
+        .kpis {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+        }
+        .kpi { padding: 14px; border-radius: 12px; background: rgba(148,163,184,.08); text-align: center }
+        .kpi .num { font: 700 20px/1.2 ui-sans-serif, system-ui; color: #fff }
+        .kpi .lbl { font-size: 12px; color: var(--muted) }
+        @media (max-width: 520px) {
+            .header { align-items: flex-start }
+            .badges { display: none }
+            .kpis { grid-template-columns: 1fr 1fr }
+        }
+        .spark {
+            position: absolute; inset: -80px; z-index: -1; filter: blur(40px); opacity: .45;
+            background:
+                radial-gradient(180px 140px at 10% 30%, rgba(34,211,238,.4), transparent 60%),
+                radial-gradient(220px 180px at 90% 70%, rgba(167,139,250,.35), transparent 60%),
+                radial-gradient(260px 180px at 40% 90%, rgba(52,211,153,.35), transparent 60%);
+        }
+        .confetti { position: fixed; inset: 0; pointer-events: none; overflow: hidden }
+        .paper {
+            position: absolute; width: 10px; height: 16px; opacity: 0; border-radius: 2px;
+            transform: translate3d(0,-20px,0) rotate(0);
+            animation: fall 1400ms ease-out forwards, spinY 900ms linear infinite;
+        }
+        @keyframes fall {
+            0% { opacity: 0; transform: translate3d(var(--x), -20px, 0) rotate(0) }
+            10% { opacity: 1 }
+            100% { transform: translate3d(var(--x), var(--y), 0) rotate(var(--r)) }
+        }
+        @keyframes spinY { to { transform: rotateY(1turn) } }
+    </style>
+
+    <div class="grid"></div>
+    <div class="spark"></div>
+
+    <main class="wrap" aria-live="polite">
+        <section class="card" role="region" aria-label="Welcome">
+            <div class="header">
+                <div class="avatar" aria-hidden="true">
+                    <div class="ring">
+                        <img id="avatar" alt="">
+                        <div id="initials" class="initials">Hi</div>
+                    </div>
+                </div>
+                <div>
+                    <h1>Welcome, <span id="name" class="emph">Friend</span>!</h1>
+                    <p class="meta">Signed in as <span id="email">—</span></p>
+                </div>
+                <div class="badges">
+                    <span class="badge">Logged in</span>
+                </div>
+            </div>
+
+            <div class="actions">
+                <a id="go-dashboard" href="#" class="btn primary" aria-label="Go to dashboard">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3l9 7h-3v8a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2v-8H3l9-7z"/></svg>
+                    Go to Dashboard
+                </a>
+                <button id="sign-out" class="btn ghost" type="button" aria-label="Sign out">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 17l5-5-5-5v3H9v4h7v3zM4 4h8a1 1 0 0 1 1 1v3H11V6H5v12h6v-2h2v3a1 1 0 0 1-1 1H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>
+                    Sign out
+                </button>
+            </div>
+
+            <div class="section">
+                <div class="panel">
+                    <div class="kpis" aria-hidden="true">
+                        <div class="kpi">
+                            <div class="num" id="kpi-a">0</div>
+                            <div class="lbl">Projects</div>
+                        </div>
+                        <div class="kpi">
+                            <div class="num" id="kpi-b">0</div>
+                            <div class="lbl">Tasks</div>
+                        </div>
+                        <div class="kpi">
+                            <div class="num" id="kpi-c">0%</div>
+                            <div class="lbl">Completion</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="confetti" aria-hidden="true" id="confetti"></div>
+
+    <script>
+        const state = {
+            dashboardHref: '#',   // set to your dashboard path if needed
+            logoutRedirect: 'index.html' // set to your login page
+        };
+
+        function initialsFrom(name = '') {
+            const parts = String(name).trim().split(/\s+/).filter(Boolean);
+            const [a = '', b = ''] = [parts[0] || '', parts[1] || ''];
+            const ini = (a[0] || '') + (b[0] || '');
+            return (ini || (name || 'FR')[0] || 'F').toUpperCase();
+        }
+
+        function setUserUI({ name, email, avatar }) {
+            const elName = document.getElementById('name');
+            const elEmail = document.getElementById('email');
+            const img = document.getElementById('avatar');
+            const initials = document.getElementById('initials');
+
+            if (name) elName.textContent = name;
+            if (email) elEmail.textContent = email;
+
+            if (avatar) {
+                img.src = avatar;
+                img.onload = () => { img.style.display = 'block'; initials.style.display = 'none'; };
+                img.onerror = () => { img.style.display = 'none'; initials.style.display = ''; };
+            }
+            initials.textContent = initialsFrom(name || email);
+        }
+
+        function getUserFromSupabaseLocalStorage() {
+            try {
+                for (const key of Object.keys(localStorage)) {
+                    if (key.startsWith('sb-') && key.endsWith('-auth-token')) {
+                        const raw = localStorage.getItem(key);
+                        if (!raw) continue;
+                        const data = JSON.parse(raw);
+                        const session = data.currentSession || data.session || data;
+                        const user = session?.user;
+                        if (user && (user.email || Object.keys(user.user_metadata || {}).length)) return user;
+                    }
+                }
+            } catch (_) {}
+            return null;
+        }
+
+        function tryGetUser() {
+            // URL fallback
+            const params = new URLSearchParams(location.search);
+            let name = params.get('name') || '';
+            let email = params.get('email') || '';
+            let avatar = params.get('avatar') || '';
+
+            // Supabase localStorage fallback
+            if (!email) {
+                const u = getUserFromSupabaseLocalStorage();
+                if (u) {
+                    email = u.email || email;
+                    name = u.user_metadata?.full_name || u.user_metadata?.name || u.user_metadata?.preferred_username || name || (email ? email.split('@')[0] : '');
+                    avatar = u.user_metadata?.avatar_url || u.user_metadata?.picture || avatar;
+                }
+            }
+            return { name, email, avatar };
+        }
+
+        function animateKPIs() {
+            const targets = [
+                { id: 'kpi-a', to: 12, suffix: '' },
+                { id: 'kpi-b', to: 48, suffix: '' },
+                { id: 'kpi-c', to: 82, suffix: '%' }
+            ];
+            targets.forEach(({ id, to, suffix }) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                const dur = 700, start = performance.now();
+                const from = 0;
+                const tick = (t) => {
+                    const p = Math.min(1, (t - start) / dur);
+                    const ease = 1 - Math.pow(1 - p, 3);
+                    const val = Math.round(from + (to - from) * ease);
+                    el.textContent = val + suffix;
+                    if (p < 1) requestAnimationFrame(tick);
+                };
+                requestAnimationFrame(tick);
+            });
+        }
+
+        function confettiBurst() {
+            const host = document.getElementById('confetti');
+            if (!host) return;
+            const colors = ['#22d3ee', '#a78bfa', '#34d399', '#f472b6', '#f59e0b', '#60a5fa'];
+            const count = 28;
+            for (let i = 0; i < count; i++) {
+                const p = document.createElement('div');
+                p.className = 'paper';
+                p.style.setProperty('--x', Math.random() * innerWidth + 'px');
+                p.style.setProperty('--y', (innerHeight * (0.6 + Math.random() * 0.4)) + 'px');
+                p.style.setProperty('--r', (Math.random() * 360) + 'deg');
+                p.style.left = (Math.random() * 100) + 'vw';
+                p.style.top = (-10 - Math.random() * 20) + 'px';
+                p.style.background = colors[i % colors.length];
+                p.style.animationDelay = (Math.random() * 150) + 'ms';
+                host.appendChild(p);
+                setTimeout(() => p.remove(), 1600);
+            }
+        }
+
+        function wire() {
+            document.getElementById('go-dashboard').href = state.dashboardHref;
+
+            document.getElementById('sign-out').addEventListener('click', async () => {
+                try {
+                    if (window.supabase?.auth?.signOut) {
+                        await window.supabase.auth.signOut();
+                    } else {
+                        // best-effort: clear Supabase local sessions
+                        Object.keys(localStorage)
+                            .filter(k => k.startsWith('sb-') && k.endsWith('-auth-token'))
+                            .forEach(k => localStorage.removeItem(k));
+                    }
+                } catch (_) {}
+                location.href = state.logoutRedirect;
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = tryGetUser();
+            setUserUI(user);
+            wire();
+            animateKPIs();
+            confettiBurst();
+        });
+    </script>
+</body>
+</html>

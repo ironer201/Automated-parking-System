@@ -1,0 +1,164 @@
+/* Styling the body with a grid background */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background-image: url("background-dashboard.png") !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  height: 100vh;
+}
+/* logo and text    */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: Arial, sans-serif;
+  margin-left: 15px;
+}
+
+.logo h1 {
+  background-color: #ff3700;
+  color: black;
+  padding: 10px 15px;
+  margin: 0;
+  font-size: 24px;
+  line-height: 1;
+  border-radius: 4px;
+}
+
+.logo p {
+  margin: 0;
+  font-size: 25px;
+  color: white;
+}
+/* Navigation bar styling */
+nav {
+  display: flex;
+  align-items: center; /* Vertically align all elements */
+  font-family: Arial, sans-serif; /* Clean, modern font */
+  width: 100%;
+  background-color: black;
+}
+nav ul {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  gap: 60px;
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+nav ul li a {
+  color: white; /* White text for contrast */
+  text-decoration: none;
+  font-size: 18px;
+  padding: 10px 15px;
+  position: relative; /* For underline animation */
+  transition: color 0.3s ease; /* Smooth color transition */
+  text-transform: capitalize; /* Normalize text case */
+}
+nav ul li a::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: white; /* White underline */
+  transition: width 0.3s ease; /* Smooth underline animation */
+}
+nav ul li a:hover::after {
+  width: 100%; /* Expand underline on hover */
+}
+
+/* body part of the HTML */
+.owner-toggle {
+  display: flex;
+  justify-content: center;
+  margin: 40px 0 20px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.toggle-btn {
+  position: relative;
+  background: rgba(0, 0, 0, 0.7);
+  color: #f5f5f5;
+  border: 2px solid #ff3700;
+  padding: 12px 28px;
+  font-size: 18px;
+  letter-spacing: 1px;
+  border-radius: 40px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin-left: 40px;
+}
+
+.toggle-btn .circle {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-left: 10px;
+  border-radius: 50%;
+  background: #ff3700;
+  box-shadow: 0 0 10px rgba(255, 55, 0, 0.7);
+}
+
+.toggle-btn:hover {
+  background: #ff3700;
+  color: #0f0f0f;
+  box-shadow: 0 8px 20px rgba(255, 55, 0, 0.4);
+}
+.listing-card {
+  max-width: 520px;
+  margin: 30px auto 70px;
+  padding: 28px;
+  background: rgba(0, 0, 0, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+  text-align: center;
+  backdrop-filter: blur(6px);
+  color: #f2f2f2;
+}
+
+.listing-card h2 {
+  font-size: 24px;
+  margin-bottom: 18px;
+  letter-spacing: 0.5px;
+}
+
+.listing-card img {
+  width: 100%;
+  max-height: 230px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+}
+
+.add-btn {
+  background: linear-gradient(135deg, #ff3700, #ff7c3c);
+  color: #0f0f0f;
+  border: none;
+  padding: 14px 20px;
+  font-size: 17px;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  width: 100%;
+}
+
+.add-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(255, 55, 0, 0.35);
+}

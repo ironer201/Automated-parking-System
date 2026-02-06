@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="booking.css" />
+    <title>Spacio Parking</title>
+  </head>
+  <body>
+    <nav>
+      <div class="logo">
+        <a href="#" aria-label="Spacio Parking home">
+          <img
+            src="logo-removebg-preview.png"
+            alt="Spacio Parking logo"
+            style="height: 48px; width: auto"
+          />
+        </a>
+      </div>
+
+      <ul>
+        <li><a href="owner.html">Home</a></li>
+        <li><a href="#">Map</a></li>
+        <li><a href="new_dashboard.html">Dashboard</a></li>
+        <li><a href="#">Setting</a></li>
+      </ul>
+    </nav>
+    <div class="parking-booking-container">
+  <!-- Booking Form Only -->
+  <div class="booking-form-section">
+    <h2>Rent Your Parking Spot</h2>
+    
+    <form id="bookingForm" novalidate>
+
+      <div class="form-group">
+        <label for="vehicleNumber">How many Vehicle</label>
+        <select class="dropdown" id="vehicleNumber" name="vehicleNumber" required>
+          <option value="" disabled selected>Select number of vehicles</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="vehicleType">Type of Car</label>
+        <select class="dropdown" id="vehicleType" name="vehicleType" required>
+          <option value="" disabled selected>Type of vehicle</option>
+          <option value="SUV">SUV</option>
+          <option value="Station Wagon">Station Wagon</option>
+          <option value="4 Seated Car">4 Seated Car</option>
+          <option value="Jeep">Jeep</option>
+          <option value="Racing or Sports">Racing or Sports</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="durationOfStay">Long or short</label>
+        <select class="dropdown" id="durationOfStay" name="durationOfStay" required>
+          <option value="" disabled selected>Duration Time</option>
+          <option value="Short Time">Short Time</option>
+          <option value="Long Time">Long Time</option>
+          <option value="More Than Hours">More Than Hours</option>
+          <option value="Less Than Hours">Less Than Hours</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="paymentType">Payment Type</label>
+        <select class="dropdown" id="paymentType" name="paymentType" required>
+          <option value="" disabled selected>Select Payment Type</option>
+          <option value="Fixed Payment">Fixed Payment</option>
+          <option value="Pay as you Stay">Pay as you Stay</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="paymentNumber">Amount of TK</label>
+        <input
+          class="dropdown"
+          type="number"
+          id="paymentNumber"
+          name="paymentNumber"
+          required
+        />
+      </div>
+
+
+      <div class="form-row date-time-group">
+        <div class="form-group">
+          <label for="bookingDate">Available from</label>
+          <input 
+            type="date" 
+            id="bookingDate" 
+            name="bookingDate" 
+            required  
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="startTime">From</label>
+          <input 
+            type="time" 
+            id="startTime" 
+            name="startTime" 
+            required
+          >
+        </div>
+      </div>
+
+      <button type="submit" class="btn-primary" id="submitBtn">
+        Complete Booking
+      </button>
+    </form>
+  </div>
+</div>
+    <script type="module" src="booking.js"></script>
+
+  </body>
+</html>

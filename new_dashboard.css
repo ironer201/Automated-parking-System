@@ -1,0 +1,358 @@
+/* Styling the body with a grid background */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background-image: url("background-dashboard.png") !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  background-position: center center !important;
+}
+/* logo and text    */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: Arial, sans-serif;
+  margin-left: 15px;
+}
+
+.logo h1 {
+  background-color: #ff3700;
+  color: black;
+  padding: 10px 15px;
+  margin: 0;
+  font-size: 24px;
+  line-height: 1;
+  border-radius: 4px;
+}
+
+.logo p {
+  margin: 0;
+  font-size: 25px;
+  color: white;
+}
+/* Navigation bar styling */
+nav {
+  display: flex;
+  align-items: center; /* Vertically align all elements */
+  font-family: Arial, sans-serif; /* Clean, modern font */
+  width: 100%;
+  background-color: black;
+}
+nav ul {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  gap: 60px;
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+nav ul li a {
+  color: white; /* White text for contrast */
+  text-decoration: none;
+  font-size: 18px;
+  padding: 10px 15px;
+  position: relative; /* For underline animation */
+  transition: color 0.3s ease; /* Smooth color transition */
+  text-transform: capitalize; /* Normalize text case */
+}
+nav ul li a::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: white; /* White underline */
+  transition: width 0.3s ease; /* Smooth underline animation */
+}
+nav ul li a:hover::after {
+  width: 100%; /* Expand underline on hover */
+}
+/* container part */
+/* Fixed colors (no CSS variables) */
+/* Container: fixed width, centered, no responsive behavior */
+.container {
+  width: 100%;
+  height: 80vh;
+  margin: 40px auto;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  justify-content: center; /* center children (e.g. .left-side) horizontally within the container */
+}
+
+/* Left column panel */
+.left-side {
+  width: 300px;
+  padding: 18px;
+  border-radius: 14px;
+  background: rgba(12, 12, 12, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+}
+
+/* Simple wrapper for options */
+.option-tab {
+  width: 100%;
+}
+
+/* Vertical column of buttons */
+.option-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Option buttons */
+.options {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 16px;
+  font-family: Arial, sans-serif;
+  font-size: 20px;
+  color: #f1f1f1;
+  background: #171717;
+  border: 1px solid #262626;
+  border-radius: 10px;
+  cursor: pointer;
+  position: relative;
+  transition: transform 140ms ease, box-shadow 200ms ease, background 200ms ease,
+    border-color 200ms ease, color 200ms ease;
+  outline: none;
+}
+
+/* Accent bar for hover/active */
+.options::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 4px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #ff6a3d, #ff3700);
+  opacity: 0;
+  transform: scaleY(0.4);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+/* Hover and focus styles */
+.options:hover,
+.options:focus-visible {
+  background: linear-gradient(180deg, #1f1f1f, #151515);
+  border-color: #3a3a3a;
+  color: #ffffff;
+  transform: translateX(4px);
+  box-shadow: 0 8px 20px rgba(255, 55, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.options:hover::before,
+.options:focus-visible::before {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+/* Pressed state */
+.options:active {
+  transform: translateX(2px) scale(0.98);
+  box-shadow: 0 4px 12px rgba(255, 55, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+/* Optional selected state */
+.options.is-active {
+  background: linear-gradient(180deg, #222222, #171717);
+  border-color: #ff3700;
+  box-shadow: 0 10px 26px rgba(255, 55, 0, 0.2);
+}
+
+.options.is-active::before {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+/* right side of the part */
+.right-side {
+      width: 700px;
+      height: 100px;
+      padding: 18px;
+      margin-top: -300px;
+      /* background: rgba(12, 12, 12, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(6px);  */
+}
+.title {
+      width: 660px;
+      height: auto;
+      background-color: red;
+      display: flex;
+      justify-content: center;
+      position: absolute;
+      top: 220px;
+      padding: 5px;
+      border-radius: 14px;
+      
+}
+.title h2 {
+      color: white;
+}
+.block {
+      min-height: 300px;
+      display: flex;
+      padding: 18px;
+      border-radius: 14px;
+      background: rgba(12, 12, 12, 0.75);
+      /* background-color: yellow; */
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(6px);
+}
+.profile {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.profile .profile-option {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(30, 30, 30, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #f1f1f1;
+  font-size: 17px;
+  margin-bottom: 15px;
+}
+
+.carInfo {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.carinfo-option {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(30, 30, 30, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #f1f1f1;
+  font-size: 17px;
+  margin-bottom: 15px;
+}
+/* owner history */
+.ownerhis {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  table-layout: auto; /* Changed to auto for better width distribution */
+
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.ownerhis thead {
+  border-bottom: 2px solid #ddd;
+}
+
+.ownerhis th {
+  padding: 10px 15px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap; /* Prevent header text from wrapping */
+}
+
+.ownerhis tbody tr:last-child {
+  border-bottom: none;
+}
+
+.ownerhis td {
+  padding: 12px 15px;
+  color: #333;
+  font-size: 14px;
+  vertical-align: middle;
+  line-height: 1.4;
+}
+
+/* Column width adjustments for better space utilization */
+.ownerhis th:nth-child(1),
+.ownerhis td:nth-child(1) {
+  width: 10%; /* Order column - minimal width */
+  min-width: 70px;
+  color: #0066cc;
+  font-weight: 500;
+}
+
+.ownerhis th:nth-child(2),
+.ownerhis td:nth-child(2) {
+  width: 65%; /* Service column - most space */
+  min-width: 150px;
+  color: #fffcfc;
+  text-align: center; /* Added: Center text in middle column */
+}
+
+.ownerhis th:nth-child(3),
+.ownerhis td:nth-child(3) {
+  width: 25%; /* Date column */
+  min-width: 120px;
+  color: #ffffff;
+  font-size: 13px;
+}
+
+/* Compact version for tighter spaces */
+.ownerhis.compact th {
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.ownerhis.compact td {
+  padding: 10px 12px;
+  font-size: 13px;
+}
+.analytics {
+  width: 100%;
+  padding: 16px;
+  border-radius: 10px;
+}
+
+.analytics .row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.analytics .row:last-child {
+  border-bottom: none;
+}
+
+.analytics .row span:first-child {
+  font-size: 20px;
+  color: #ffffff;
+}
+
+.analytics .row span:last-child {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+}

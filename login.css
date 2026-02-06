@@ -1,0 +1,206 @@
+/* ===== Reset & body ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background: url("login/back.png") no-repeat center center/cover;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* overlay */
+.bg-particles {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 0;
+}
+
+/* ===== Container ===== */
+.container {
+  position: relative;
+  width: 380px;
+  height: 550px;               /* fixed container height */
+  padding: 36px 28px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.08);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Logo / header */
+.logo-container {
+  text-align: center;
+  /* margin-bottom: 8px; */
+  z-index: 6;
+}
+.logo-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: contain;
+  display: inline-block;
+}
+.brand-name {
+  font-size: 28px;
+  font-weight: 700;
+  margin-top: 8px;
+}
+.tagline {
+  font-size: 13px;
+  color: #ddd;
+  margin-top: 4px;
+}
+
+/* ===== Form area ===== */
+/* NOTE: we give the form a fixed height so the absolutely-positioned pages can center nicely */
+.login-form {
+  position: relative;
+  width: 100%;
+  height: 360px;           /* enough space for inputs */
+  margin-top: 12px;
+  overflow: hidden;
+  z-index: 6;
+}
+
+/* Each page (login / signup) is absolutely stacked and vertically centered */
+.form-page {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  transform: translateX(0) translateY(-50%); /* default; overridden per page */
+  padding: 0 8px 72px; /* bottom padding so fields don't collide with bottom buttons */
+  box-sizing: border-box;
+  transition: transform 0.55s cubic-bezier(.2,.8,.2,1), opacity 0.45s ease;
+  will-change: transform, opacity;
+}
+
+/* default visibility */
+.login-fields {
+  transform: translateX(0%) translateY(-50%);
+  opacity: 1;
+}
+.signup-fields {
+  transform: translateX(100%) translateY(-50%); /* off-screen to the right */
+  opacity: 0;
+  pointer-events: none; /* prevent tabbing into hidden fields */
+}
+
+/* Active (signup) state */
+.container.signup-active .login-fields {
+  transform: translateX(-100%) translateY(-50%); /* slide left */
+  opacity: 0;
+  pointer-events: none;
+}
+.container.signup-active .signup-fields {
+  transform: translateX(0%) translateY(-50%);    /* slide in */
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Input wrapper and inputs */
+.login-form .input-group {
+  width: 100%;
+  margin-bottom: 10px;
+}
+.form-input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  background: rgba(255,255,255,0.92);
+  color: #111;
+  font-size: 15px;
+  transition: box-shadow 0.2s ease, background 0.2s;
+}
+.form-input::placeholder { color: #8a8a8a; }
+.form-input:focus {
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(0,180,255,0.12);
+}
+
+/* forgot password - sits inside login-fields, aligned right */
+.forgot-password {
+  display: block;
+  text-align: right;
+  font-size: 13px;
+  color: #eee;
+  text-decoration: none;
+  margin-top: 6px;
+  transition: color .18s;
+}
+.forgot-password:hover { color: #00cfff; }
+
+/* ===== Buttons (fixed to bottom inside the form area) ===== */
+.button-group {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 18px;      /* relative to .login-form */
+  display: flex;
+  gap: 12px;
+  z-index: 8;
+}
+.btn {
+  flex: 1;
+  padding: 12px 10px;
+  font-weight: 700;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: transform .12s ease, background .18s;
+}
+.btn:active { transform: translateY(1px); }
+.btn-login {
+  background: #00cfff;
+  color: #fff;
+}
+.btn-login:hover { background: #00a7d6; }
+.btn-signup {
+  background: #fff;
+  color: #222;
+}
+.btn-signup:hover { background: #222; color: #fff; }
+
+/* ===== Home button (top-left of viewport) ===== */
+.home-btn {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  background: #fbea00;
+  color: #222;
+  font-weight: 700;
+  border: none;
+  padding: 8px 14px;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.18s ease;
+  z-index: 9999;
+}
+.home-btn:hover {
+  background: #222;
+  color: #fff;
+}
+
+/* small responsive tweak */
+@media (max-width: 420px) {
+  .container { width: calc(100% - 32px); padding: 28px; }
+  .login-form { height: 420px; } /* allow more vertical space on small screens */
+}
