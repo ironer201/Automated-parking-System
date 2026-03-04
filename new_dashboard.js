@@ -69,17 +69,34 @@ analyticsbtn.addEventListener('click', function(){
 });
 //The back-end Logic start here
 
-const nameSpan = document.getElementById('name');
-const emailSpan = document.getElementById('email');
 const supabaseUrl = 'https://hrfwntixjesvexqjeviv.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyZndudGl4amVzdmV4cWpldml2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0MjE3MTQsImV4cCI6MjA3NDk5NzcxNH0.UaiP3UhfqS6Li6JSAEjsJkAYPfvsqkSgsSGoatOstxs';
-const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyZndudGl4amVzdmV4cWpldml2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0MjE3MTQsImV4cCI6MjA3NDk5NzcxNH0.UaiP3UhfqS6Li6JSAEjsJkAYPfvsqkSgsSGoatOstxs';
+const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
 
-async function setEmail() {
-    const { data, error } = await supabaseClient.auth.getUser();
-    if (error || !data?.user) return;
-    const span = document.getElementById('email');
-    if (span) span.textContent = data.user.email ?? '';
+const nameEl = document.getElementById('name');
+const emailEl = document.getElementById('email');
+let currentUser = null; // Store current user
+
+async function loadCurrentUser() {
+    const { data: { user }, error } = await supabaseClient.auth.getUser();
+
+    if (error || !user) {
+        nameEl.textContent = 'Not logged in';
+        emailEl.textContent = '';
+        currentUser = null;
+        return;
+    }
+
+    currentUser = user; // Store the user record
+    emailEl.textContent = user.email || 'No email';
+
+    const fullName =
+        user.user_metadata?.full_name ||
+        user.user_metadata?.name ||
+        user.user_metadata?.given_name ||
+        '';
+
+    nameEl.textContent = fullName || 'No name set';
 }
 
-setEmail();
+loadCurrentUser();
