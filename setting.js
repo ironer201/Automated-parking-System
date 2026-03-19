@@ -41,8 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const { createClient } = supabase;
   
   const supabaseClient = createClient(
-    'https://hrfwntixjesvexqjeviv.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyZndudGl4amVzdmV4cWpldml2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0MjE3MTQsImV4cCI6MjA3NDk5NzcxNH0.UaiP3UhfqS6Li6JSAEjsJkAYPfvsqkSgsSGoatOstxs'
+"Supabased-URL",
+"Supabase-Anon-key"
   );
 
   console.log("Supabase client initialized");
