@@ -69,8 +69,8 @@ analyticsbtn.addEventListener('click', function(){
 });
 //The back-end Logic start here
 
-const supabaseUrl = 'https://hrfwntixjesvexqjeviv.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyZndudGl4amVzdmV4cWpldml2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0MjE3MTQsImV4cCI6MjA3NDk5NzcxNH0.UaiP3UhfqS6Li6JSAEjsJkAYPfvsqkSgsSGoatOstxs';
+const supabaseUrl = "Supabased-URL";
+const supabaseAnonKey = "Supabase-Anon-key";
 const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
 
 const nameEl = document.getElementById('name');
