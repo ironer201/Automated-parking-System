@@ -77,8 +77,8 @@ window.onload = showLogin;
 // - After successful signup, inserts {name,email,phone} into "profiles" table
 //   Make sure a table named "profiles" exists with columns: name (text), email (text), phone (text)
 
-const SUPABASE_URL = "https://hrfwntixjesvexqjeviv.supabase.co"; // TODO: set your project URL
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyZndudGl4amVzdmV4cWpldml2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0MjE3MTQsImV4cCI6MjA3NDk5NzcxNH0.UaiP3UhfqS6Li6JSAEjsJkAYPfvsqkSgsSGoatOstxs"; 
+const SUPABASE_URL = "Supabased-URL"; // TODO: set your project URL
+const SUPABASE_ANON_KEY = "Supabase-Anon-key"; 
 
 // const SUPABASE_URL = "I_Have_it";
 // const SUPABASE_ANON_KEY = "I_Have_it"
