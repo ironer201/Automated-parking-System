@@ -1,77 +1,168 @@
 // app/profile.tsx
 import { MainLayout } from "@/components/MainLayout";
+import { getSupabaseClient } from "@/lib/supabase";
 import { Ionicons } from "@expo/vector-icons";
-import * as ImagePicker from "expo-image-picker";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-    Alert,
-    Image,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  ActivityIndicator,
 } from "react-native";
+
+type ProfileState = {
+  name: string;
+  email: string;
+  phone: string;
+  permanentAddress: string;
+  presentAddress: string;
+  gender: string;
+};
+
+type InputFieldProps = {
+  label: string;
+  value: string;
+  onChangeText: (text: string) => void;
+  multiline?: boolean;
+};
+
+const normalizeGender = (value: string | null | undefined) => {
+  if (!value) return "";
+
+  const normalized = value.trim().toLowerCase();
+
+  if (normalized === "male") return "Male";
+  if (normalized === "female") return "Female";
+  if (normalized === "other") return "Other";
+
+  return value;
+};
 
 export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
-  const [profile, setProfile] = useState({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+1 234 567 8900",
-    permanentAddress: "123 Main Street, Apt 4B, New York, NY 10001",
-    presentAddress: "456 Park Avenue, Suite 789, Los Angeles, CA 90001",
-    gender: "Male",
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [originalProfile, setOriginalProfile] = useState<ProfileState | null>(null);
+  const [profile, setProfile] = useState<ProfileState>({
+    name: "",
+    email: "",
+    phone: "",
+    permanentAddress: "",
+    presentAddress: "",
+    gender: "",
   });
-
-  const [profileImage, setProfileImage] = useState<string | null>(null);
 
   const handleEdit = () => {
     setIsEditing(true);
   };
 
-  const handleSave = () => {
-    // Here you would save to your backend/supabase
-    setIsEditing(false);
-    Alert.alert("Success", "Profile updated successfully!");
+  const handleSave = async () => {
+    if (!userId) {
+      Alert.alert("Error", "No active session found.");
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+      const supabase = getSupabaseClient();
+      
+      // IMPORTANT: Table name is 'profiles' (lowercase, plural)
+      const { error } = await supabase.from("profiles").upsert(
+        {
+          id: userId,
+          name: profile.name || null,
+          email: profile.email || null,
+          phone: profile.phone || null,
+          presentaddress: profile.presentAddress || null,
+          permentaddress: profile.permanentAddress || null,
+          gender: profile.gender?.toLowerCase() || null,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "id" },
+      );
+
+      if (error) {
+        Alert.alert("Error", error.message);
+        return;
+      }
+
+      setOriginalProfile(profile);
+      setIsEditing(false);
+      Alert.alert("Success", "Profile updated successfully!");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to update profile.";
+      Alert.alert("Error", message);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleCancel = () => {
     setIsEditing(false);
-    // Reset to original data if needed
-  };
-
-  const pickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (status !== "granted") {
-      Alert.alert(
-        "Permission needed",
-        "Please grant camera roll permissions to change profile picture",
-      );
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.8,
-    });
-
-    if (!result.canceled) {
-      setProfileImage(result.assets[0].uri);
+    if (originalProfile) {
+      setProfile(originalProfile);
     }
   };
 
-  const InputField = ({
-    label,
-    value,
-    onChangeText,
-    multiline = false,
-  }: any) => (
+  const loadProfile = async () => {
+    try {
+      const supabase = getSupabaseClient();
+      const { data, error } = await supabase.auth.getUser();
+
+      if (error || !data.user) {
+        throw new Error("Unable to load user session.");
+      }
+
+      const activeUserId = data.user.id;
+      
+      // IMPORTANT: Table name is 'profiles' (lowercase, plural)
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .select("id, name, email, phone, presentaddress, permentaddress, gender")
+        .eq("id", activeUserId)
+        .maybeSingle();
+
+      if (profileError) {
+        console.error("Profile fetch error:", profileError);
+        throw profileError;
+      }
+
+      // Build profile state from fetched data
+      const nextProfile: ProfileState = {
+        name: profileData?.name ?? "",
+        email: profileData?.email ?? data.user.email ?? "",
+        phone: profileData?.phone ?? "",
+        permanentAddress: profileData?.permentaddress ?? "",
+        presentAddress: profileData?.presentaddress ?? "",
+        gender: normalizeGender(profileData?.gender) ?? "",
+      };
+
+      setUserId(profileData?.id ?? activeUserId);
+      setProfile(nextProfile);
+      setOriginalProfile(nextProfile);
+      setLoadError(null);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to load profile.";
+      setLoadError(message);
+      console.error("Load profile error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void loadProfile();
+  }, []);
+
+  const InputField = ({ label, value, onChangeText, multiline = false }: InputFieldProps) => (
     <View style={styles.inputContainer}>
       <Text style={styles.label}>{label}</Text>
       <TextInput
@@ -87,53 +178,52 @@ export default function ProfilePage() {
     </View>
   );
 
+  if (isLoading) {
+    return (
+      <MainLayout>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#f2b134" />
+          <Text style={styles.loadingText}>Loading profile...</Text>
+        </View>
+      </MainLayout>
+    );
+  }
+
   return (
     <MainLayout>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        {loadError && (
+          <View style={styles.errorBanner}>
+            <Text style={styles.errorText}>{loadError}</Text>
+            <TouchableOpacity onPress={loadProfile} style={styles.retryButton}>
+              <Text style={styles.retryText}>Retry</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        
         <View style={styles.header}>
           <Text style={styles.headerTitle}>My Profile</Text>
           <TouchableOpacity
             onPress={isEditing ? handleSave : handleEdit}
             style={styles.editButton}
+            disabled={isSaving}
           >
-            <Ionicons
-              name={isEditing ? "checkmark-done" : "create-outline"}
-              size={24}
-              color="#010101"
-            />
-            <Text style={styles.editButtonText}>
-              {isEditing ? "Save" : "Edit"}
-            </Text>
+            {isSaving ? (
+              <ActivityIndicator size="small" color="#010101" />
+            ) : (
+              <>
+                <Ionicons name={isEditing ? "checkmark-done" : "create-outline"} size={24} color="#010101" />
+                <Text style={styles.editButtonText}>{isEditing ? "Save" : "Edit"}</Text>
+              </>
+            )}
           </TouchableOpacity>
         </View>
 
-        {/* Profile Image Section */}
+        {/* Profile Image Placeholder */}
         <View style={styles.imageSection}>
-          <TouchableOpacity
-            onPress={isEditing ? pickImage : undefined}
-            disabled={!isEditing}
-          >
-            <View style={styles.profileImageContainer}>
-              {profileImage ? (
-                <Image
-                  source={{ uri: profileImage }}
-                  style={styles.profileImage}
-                />
-              ) : (
-                <View style={styles.profileImagePlaceholder}>
-                  <Ionicons name="person" size={60} color="#fff" />
-                </View>
-              )}
-              {isEditing && (
-                <View style={styles.cameraIcon}>
-                  <Ionicons name="camera" size={20} color="#fff" />
-                </View>
-              )}
-            </View>
-          </TouchableOpacity>
-          {isEditing && (
-            <Text style={styles.changePhotoText}>Tap to change photo</Text>
-          )}
+          <View style={styles.profileImagePlaceholder}>
+            <Ionicons name="person" size={60} color="#fff" />
+          </View>
         </View>
 
         {/* Profile Details Card */}
@@ -141,25 +231,19 @@ export default function ProfilePage() {
           <InputField
             label="Full Name"
             value={profile.name}
-            onChangeText={(text: string) =>
-              setProfile({ ...profile, name: text })
-            }
+            onChangeText={(text: string) => setProfile({ ...profile, name: text })}
           />
 
           <InputField
             label="Email"
             value={profile.email}
-            onChangeText={(text: string) =>
-              setProfile({ ...profile, email: text })
-            }
+            onChangeText={(text: string) => setProfile({ ...profile, email: text })}
           />
 
           <InputField
             label="Phone Number"
             value={profile.phone}
-            onChangeText={(text: string) =>
-              setProfile({ ...profile, phone: text })
-            }
+            onChangeText={(text: string) => setProfile({ ...profile, phone: text })}
           />
 
           {/* Gender Selection */}
@@ -174,9 +258,7 @@ export default function ProfilePage() {
                     profile.gender === option && styles.genderOptionSelected,
                     !isEditing && styles.genderOptionDisabled,
                   ]}
-                  onPress={() =>
-                    isEditing && setProfile({ ...profile, gender: option })
-                  }
+                  onPress={() => isEditing && setProfile({ ...profile, gender: option })}
                   disabled={!isEditing}
                 >
                   <Text
@@ -195,25 +277,21 @@ export default function ProfilePage() {
           <InputField
             label="Permanent Address"
             value={profile.permanentAddress}
-            onChangeText={(text: string) =>
-              setProfile({ ...profile, permanentAddress: text })
-            }
+            onChangeText={(text: string) => setProfile({ ...profile, permanentAddress: text })}
             multiline
           />
 
           <InputField
             label="Present Address"
             value={profile.presentAddress}
-            onChangeText={(text: string) =>
-              setProfile({ ...profile, presentAddress: text })
-            }
+            onChangeText={(text: string) => setProfile({ ...profile, presentAddress: text })}
             multiline
           />
         </View>
 
         {/* Cancel Button (only shows when editing) */}
         {isEditing && (
-          <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
+          <TouchableOpacity style={styles.cancelButton} onPress={handleCancel} disabled={isSaving}>
             <Text style={styles.cancelButtonText}>Cancel</Text>
           </TouchableOpacity>
         )}
@@ -248,6 +326,45 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f5f5f5",
   },
+  loadingContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 24,
+    gap: 12,
+  },
+  loadingText: {
+    fontSize: 16,
+    color: "#333",
+    fontWeight: "600",
+  },
+  errorBanner: {
+    backgroundColor: "#ffe8e8",
+    marginHorizontal: 16,
+    marginTop: 16,
+    padding: 12,
+    borderRadius: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  errorText: {
+    color: "#b00020",
+    fontSize: 13,
+    fontWeight: "600",
+    flex: 1,
+  },
+  retryButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    backgroundColor: "#b00020",
+    borderRadius: 6,
+  },
+  retryText: {
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: "600",
+  },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -256,11 +373,8 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === "ios" ? 60 : 40,
     paddingBottom: 20,
     backgroundColor: "#f5f5f5",
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-    marginLeft:20,
-    // marginTop: 55,
-    marginBottom:40,
+    marginLeft: 20,
+    marginBottom: 40,
   },
   headerTitle: {
     fontSize: 28,
@@ -270,14 +384,14 @@ const styles = StyleSheet.create({
   editButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.05)",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
+    gap: 5,
   },
   editButtonText: {
     color: "#090909",
-    marginLeft: 5,
     fontSize: 14,
     fontWeight: "600",
   },
@@ -285,17 +399,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: -40,
     marginBottom: 20,
-  },
-  profileImageContainer: {
-    position: "relative",
-  },
-  profileImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    borderWidth: 4,
-    borderColor: "#fff",
-    backgroundColor: "#ddd",
   },
   profileImagePlaceholder: {
     width: 120,
@@ -306,22 +409,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 4,
     borderColor: "#fff",
-  },
-  cameraIcon: {
-    position: "absolute",
-    bottom: 5,
-    right: 5,
-    backgroundColor: "#f2b134",
-    borderRadius: 20,
-    padding: 8,
-    borderWidth: 2,
-    borderColor: "#fff",
-  },
-  changePhotoText: {
-    marginTop: 8,
-    color: "#f2b134",
-    fontSize: 12,
-    fontWeight: "500",
   },
   card: {
     backgroundColor: "#fff",
