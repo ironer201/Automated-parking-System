@@ -1,15 +1,111 @@
 // app/(tabs)/owner-monitoring.tsx
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { MainLayout } from "../../components/MainLayout"; // ← Fixed Import Path
+import { useFocusEffect } from "expo-router";
+import React, { useCallback, useRef, useState } from "react";
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
+import { MainLayout } from "../../components/MainLayout";
+import { useAuth } from "../../contexts/AuthContext";
+import { getSupabaseClient } from "../../lib/supabase";
 
 const LandOwnerMonitoring = () => {
+  const { user } = useAuth();
+  const [todayEntry, setTodayEntry] = useState("0");
+  const [monthEntry, setMonthEntry] = useState("0");
+  const [totalEntry, setTotalEntry] = useState("0");
+  const [activeBookings, setActiveBookings] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  const prevUserIdRef = useRef<string | null>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!user) return;
+      if (user.id !== prevUserIdRef.current) {
+        prevUserIdRef.current = user.id;
+        setLoading(true);
+      }
+
+      const fetchOwnerData = async () => {
+        try {
+          const supabase = getSupabaseClient();
+
+          let phone = user.phone || user.user_metadata?.phone;
+
+          if (!phone) {
+            const { data: profile } = await supabase
+              .from("profiles")
+              .select("phone")
+              .eq("id", user.id)
+              .maybeSingle();
+            phone = profile?.phone;
+          }
+
+          if (!phone) {
+            setLoading(false);
+            return;
+          }
+
+          const { data } = await supabase
+            .from("owner_record")
+            .select("total_entry_today, total_entry_month, total_entry")
+            .eq("phone", phone)
+            .maybeSingle();
+
+          if (data) {
+            setTodayEntry(String(data.total_entry_today ?? 0));
+            setMonthEntry(String(data.total_entry_month ?? 0));
+            setTotalEntry(String(data.total_entry ?? 0));
+          } else {
+            setTodayEntry("0");
+            setMonthEntry("0");
+            setTotalEntry("0");
+          }
+
+          const { count, error: activeError } = await supabase
+            .from("allRecord")
+            .select("id", { count: "exact", head: true })
+            .eq("phone", phone)
+            .eq("status", true);
+
+          if (!activeError) {
+            setActiveBookings(count ?? 0);
+          }
+        } catch {
+          // silently fail
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchOwnerData();
+    }, [user]),
+  );
   return (
     <MainLayout>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header} />
+
+        {loading ? (
+          <ActivityIndicator size="large" color="#10b981" style={{ marginTop: 40 }} />
+        ) : (
+          <>
+        {/* Today's Entry */}
+        <View style={styles.entryContainer}>
+          <Text style={styles.entryLabel}>Today&apos;s Entry</Text>
+          <Text style={styles.entryValue}>{todayEntry}</Text>
+        </View>
+
+        {/* This Month Entry */}
+        <View style={styles.entryContainer}>
+          <Text style={styles.entryLabel}>This Month Entry</Text>
+          <Text style={styles.entryValue}>{monthEntry}</Text>
+        </View>
+
+        {/* Total Entry */}
+        <View style={styles.entryContainer}>
+          <Text style={styles.entryLabel}>Total Entry</Text>
+          <Text style={styles.entryValue}>{totalEntry}</Text>
+        </View>
 
         {/* Stats */}
         <View style={styles.profileSection}>
@@ -30,19 +126,16 @@ const LandOwnerMonitoring = () => {
           <View style={styles.earningCard}>
             <Text style={styles.earningLabel}>Today</Text>
             <Text style={styles.earningAmount}>৳4,85</Text>
-            <Text style={styles.growthPositive}>+18%</Text>
           </View>
 
           <View style={styles.earningCard}>
             <Text style={styles.earningLabel}>This Month</Text>
             <Text style={styles.earningAmount}>৳78,20</Text>
-            <Text style={styles.growthPositive}>+12%</Text>
           </View>
 
           <View style={styles.earningCard}>
             <Text style={styles.earningLabel}>Total</Text>
             <Text style={styles.earningAmount}>৳412,60</Text>
-            <Text style={styles.updateText}>Updated: 10 Mar</Text>
           </View>
         </View>
 
@@ -56,46 +149,7 @@ const LandOwnerMonitoring = () => {
           </View>
 
           <View style={styles.activeBadge}>
-            <Text style={styles.activeText}>8 Active</Text>
-          </View>
-
-          <View style={styles.bookingCard}>
-            <View>
-              <Text style={styles.vehicleId}>ABC-1234 (Sedan)</Text>
-              <Text style={styles.entryTime}>Entry: 14:32 • 2h 45m</Text>
-            </View>
-            <View style={styles.statusContainer}>
-              <Text style={styles.amount}>৳180</Text>
-              <View style={[styles.statusBadge, styles.activeStatus]}>
-                <Text style={styles.statusText}>Active</Text>
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.bookingCard}>
-            <View>
-              <Text style={styles.vehicleId}>DEF-5678 (SUV)</Text>
-              <Text style={styles.entryTime}>Entry: 15:10 • 1h 20m</Text>
-            </View>
-            <View style={styles.statusContainer}>
-              <Text style={styles.amount}>৳120</Text>
-              <View style={[styles.statusBadge, styles.activeStatus]}>
-                <Text style={styles.statusText}>Active</Text>
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.bookingCard}>
-            <View>
-              <Text style={styles.vehicleId}>GHI-9012 (Bike)</Text>
-              <Text style={styles.entryTime}>Completed 15:45</Text>
-            </View>
-            <View style={styles.statusContainer}>
-              <Text style={styles.amount}>৳80</Text>
-              <View style={[styles.statusBadge, styles.doneStatus]}>
-                <Text style={styles.statusText}>Done</Text>
-              </View>
-            </View>
+            <Text style={styles.activeText}>{activeBookings} Active</Text>
           </View>
         </View>
 
@@ -134,6 +188,8 @@ const LandOwnerMonitoring = () => {
             <Text style={styles.alertText}>2 Alerts</Text>
           </View>
         </View>
+          </>
+        )}
       </ScrollView>
     </MainLayout>
   );
@@ -147,6 +203,34 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     backgroundColor: "white",
+  },
+  entryContainer: {
+    backgroundColor: "white",
+    marginHorizontal: 20,
+    marginTop: 8,
+    marginBottom: 10,
+    borderRadius: 16,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: "#e2e8f0",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 4,
+    elevation: 2,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  entryLabel: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#1e2937",
+  },
+  entryValue: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#10b981",
   },
   profileSection: {
     padding: 20,
@@ -177,29 +261,28 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: 20,
-    gap: 12,
-    marginBottom: 24,
+    gap: 8,
+    marginBottom: 16,
   },
   earningCard: {
     flex: 1,
     backgroundColor: "white",
     borderRadius: 16,
-    padding: 16,
+    padding: 12,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  earningLabel: { fontSize: 13, color: "#64748b", marginBottom: 8 },
+  earningLabel: { fontSize: 16, color: "#64748b", marginBottom: 4, textAlign: "center" },
   earningAmount: {
-    fontSize: 20,
+    fontSize: 21,
     fontWeight: "700",
     color: "#1e2937",
-    marginBottom: 4,
+    marginBottom: 2,
+    textAlign: "center",
   },
-  growthPositive: { color: "#10b981", fontSize: 13, fontWeight: "600" },
-  updateText: { color: "#64748b", fontSize: 12 },
 
   section: {
     backgroundColor: "white",
