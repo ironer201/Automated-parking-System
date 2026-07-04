@@ -13,6 +13,7 @@ const LandOwnerMonitoring = () => {
   const [monthEntry, setMonthEntry] = useState("0");
   const [totalEntry, setTotalEntry] = useState("0");
   const [activeBookings, setActiveBookings] = useState(0);
+  const [slotsCount, setSlotsCount] = useState("0");
   const [loading, setLoading] = useState(true);
 
   const prevUserIdRef = useRef<string | null>(null);
@@ -70,6 +71,17 @@ const LandOwnerMonitoring = () => {
           if (!activeError) {
             setActiveBookings(count ?? 0);
           }
+
+          const { count: slotCount, error: slotError } = await supabase
+            .from("parking_bookings")
+            .select("id", { count: "exact", head: true })
+            .eq("user_id", user.id);
+
+          if (!slotError) {
+            setSlotsCount(String(slotCount ?? 0));
+          } else {
+            setSlotsCount("0");
+          }
         } catch {
           // silently fail
         } finally {
@@ -111,11 +123,11 @@ const LandOwnerMonitoring = () => {
         <View style={styles.profileSection}>
           <View style={styles.statsCards}>
             <View style={styles.statsCard}>
-              <Text style={styles.statValue}>3</Text>
+              <Text style={styles.statValue}>0</Text>
               <Text style={styles.statLabel}>Vehicles</Text>
             </View>
             <View style={styles.statsCard}>
-              <Text style={styles.statValue}>52</Text>
+              <Text style={styles.statValue}>{slotsCount}</Text>
               <Text style={styles.statLabel}>Slots</Text>
             </View>
           </View>
@@ -126,11 +138,6 @@ const LandOwnerMonitoring = () => {
           <View style={styles.earningCard}>
             <Text style={styles.earningLabel}>Today</Text>
             <Text style={styles.earningAmount}>৳4,85</Text>
-          </View>
-
-          <View style={styles.earningCard}>
-            <Text style={styles.earningLabel}>This Month</Text>
-            <Text style={styles.earningAmount}>৳78,20</Text>
           </View>
 
           <View style={styles.earningCard}>
@@ -176,18 +183,7 @@ const LandOwnerMonitoring = () => {
           </View>
         </View>
 
-        {/* Security & Status */}
-        <View style={styles.securitySection}>
-          <View>
-            <Text style={styles.securityTitle}>Security & Status</Text>
-            <Text style={styles.securitySubtitle}>
-              Occupancy and quick preferences
-            </Text>
-          </View>
-          <View style={styles.alertBadge}>
-            <Text style={styles.alertText}>2 Alerts</Text>
-          </View>
-        </View>
+
           </>
         )}
       </ScrollView>
@@ -348,25 +344,6 @@ const styles = StyleSheet.create({
   activityText: { marginLeft: 12, fontSize: 15, color: "#334155" },
   latestActivity: { color: "#64748b", fontSize: 13 },
 
-  securitySection: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "white",
-    marginHorizontal: 20,
-    padding: 20,
-    borderRadius: 16,
-    marginBottom: 30,
-  },
-  securityTitle: { fontSize: 17, fontWeight: "700", color: "#1e2937" },
-  securitySubtitle: { color: "#64748b", fontSize: 13 },
-  alertBadge: {
-    backgroundColor: "#ef4444",
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 999,
-  },
-  alertText: { color: "white", fontWeight: "600", fontSize: 14 },
 });
 
 export default LandOwnerMonitoring;
