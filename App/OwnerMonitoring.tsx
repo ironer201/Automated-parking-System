@@ -1,99 +1,169 @@
-// app/(tabs)/owner-monitoring.tsx
 import { Ionicons } from "@expo/vector-icons";
-import { useFocusEffect } from "expo-router";
-import React, { useCallback, useRef, useState } from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useFocusEffect, useRouter } from "expo-router";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { ActivityIndicator, BackHandler, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 import { MainLayout } from "../../components/MainLayout";
 import { useAuth } from "../../contexts/AuthContext";
 import { getSupabaseClient } from "../../lib/supabase";
 
 const LandOwnerMonitoring = () => {
   const { user } = useAuth();
+  const router = useRouter();
   const [todayEntry, setTodayEntry] = useState("0");
   const [monthEntry, setMonthEntry] = useState("0");
   const [totalEntry, setTotalEntry] = useState("0");
   const [activeBookings, setActiveBookings] = useState(0);
   const [slotsCount, setSlotsCount] = useState("0");
+  const [todayEarnings, setTodayEarnings] = useState<string | null>(null);
+  const [totalEarnings, setTotalEarnings] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   const prevUserIdRef = useRef<string | null>(null);
 
-  useFocusEffect(
-    useCallback(() => {
-      if (!user) return;
+  const onBackPress = useCallback(() => {
+    router.push("/landing");
+    return true;
+  }, [router]);
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", onBackPress);
+    return () => backHandler.remove();
+  }, [onBackPress]);
+
+  const fetchOwnerData = useCallback(async (isRefresh = false) => {
+    if (!user) return;
+    if (!isRefresh) {
       if (user.id !== prevUserIdRef.current) {
         prevUserIdRef.current = user.id;
         setLoading(true);
       }
+    }
+    try {
+      const supabase = getSupabaseClient();
 
-      const fetchOwnerData = async () => {
-        try {
-          const supabase = getSupabaseClient();
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("phone")
+        .eq("id", user.id)
+        .maybeSingle();
+      const phone = profile?.phone;
 
-          let phone = user.phone || user.user_metadata?.phone;
+      if (!phone) {
+        setLoading(false);
+        setRefreshing(false);
+        return;
+      }
 
-          if (!phone) {
-            const { data: profile } = await supabase
-              .from("profiles")
-              .select("phone")
-              .eq("id", user.id)
-              .maybeSingle();
-            phone = profile?.phone;
-          }
+      const { data } = await supabase
+        .from("owner_record")
+        .select("total_entry_today, total_entry_month, total_entry")
+        .eq("phone", phone)
+        .maybeSingle();
 
-          if (!phone) {
-            setLoading(false);
-            return;
-          }
+      if (data) {
+        setTodayEntry(String(data.total_entry_today ?? 0));
+        setMonthEntry(String(data.total_entry_month ?? 0));
+        setTotalEntry(String(data.total_entry ?? 0));
+      } else {
+        setTodayEntry("0");
+        setMonthEntry("0");
+        setTotalEntry("0");
+      }
 
-          const { data } = await supabase
-            .from("owner_record")
-            .select("total_entry_today, total_entry_month, total_entry")
-            .eq("phone", phone)
-            .maybeSingle();
+      const { count, error: activeError } = await supabase
+        .from("allRecord")
+        .select("id", { count: "exact", head: true })
+        .eq("status", true);
 
-          if (data) {
-            setTodayEntry(String(data.total_entry_today ?? 0));
-            setMonthEntry(String(data.total_entry_month ?? 0));
-            setTotalEntry(String(data.total_entry ?? 0));
+      if (!activeError) {
+        setActiveBookings(count ?? 0);
+      }
+
+      const { count: slotCount, error: slotError } = await supabase
+        .from("parking_bookings")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user.id);
+
+      if (!slotError) {
+        setSlotsCount(String(slotCount ?? 0));
+      } else {
+        setSlotsCount("0");
+      }
+
+      setTodayEarnings(null);
+      setTotalEarnings(null);
+
+      if (phone === "01766666") {
+        const { data: bookingData } = await supabase
+          .from("parking_bookings")
+          .select("payment_amount")
+          .eq("user_id", user.id)
+          .order("booking_date", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        const paymentAmount = Number(bookingData?.payment_amount ?? 0);
+
+        const { data: allRecords } = await supabase
+          .from("allRecord")
+          .select("Entry, OutGoing")
+          .not("OutGoing", "is", null);
+
+        let todayEarningsTotal = 0;
+        let totalEarningsTotal = 0;
+        const now = new Date();
+        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+        for (const record of allRecords || []) {
+          const entry = new Date(record.Entry);
+          const outgoing = new Date(record.OutGoing);
+
+          const diffMs = outgoing.getTime() - entry.getTime();
+          const diffMinutes = diffMs / (1000 * 60);
+
+          let hours;
+          if (diffMinutes < 60) {
+            hours = 1;
           } else {
-            setTodayEntry("0");
-            setMonthEntry("0");
-            setTotalEntry("0");
+            hours = Math.ceil(diffMinutes / 60);
           }
 
-          const { count, error: activeError } = await supabase
-            .from("allRecord")
-            .select("id", { count: "exact", head: true })
-            .eq("phone", phone)
-            .eq("status", true);
+          const earning = hours * paymentAmount;
+          totalEarningsTotal += earning;
 
-          if (!activeError) {
-            setActiveBookings(count ?? 0);
+          if (entry >= startOfToday) {
+            todayEarningsTotal += earning;
           }
-
-          const { count: slotCount, error: slotError } = await supabase
-            .from("parking_bookings")
-            .select("id", { count: "exact", head: true })
-            .eq("user_id", user.id);
-
-          if (!slotError) {
-            setSlotsCount(String(slotCount ?? 0));
-          } else {
-            setSlotsCount("0");
-          }
-        } catch {
-          // silently fail
-        } finally {
-          setLoading(false);
         }
-      };
+
+        setTodayEarnings(todayEarningsTotal.toString());
+        setTotalEarnings(totalEarningsTotal.toString());
+      }
+    } catch (e) {
+      console.error("OwnerMonitoring fetch error:", e);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, [user]);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchOwnerData(true);
+  }, [fetchOwnerData]);
+
+  useFocusEffect(
+    useCallback(() => {
       fetchOwnerData();
-    }, [user]),
+    }, [fetchOwnerData]),
   );
   return (
     <MainLayout>
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.container}
+        showsVerticalScrollIndicator={false}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         {/* Header */}
         <View style={styles.header} />
 
@@ -137,12 +207,12 @@ const LandOwnerMonitoring = () => {
         <View style={styles.earningsContainer}>
           <View style={styles.earningCard}>
             <Text style={styles.earningLabel}>Today</Text>
-            <Text style={styles.earningAmount}>৳4,85</Text>
+            <Text style={styles.earningAmount}>৳{todayEarnings ?? "0"}</Text>
           </View>
 
           <View style={styles.earningCard}>
             <Text style={styles.earningLabel}>Total</Text>
-            <Text style={styles.earningAmount}>৳412,60</Text>
+            <Text style={styles.earningAmount}>৳{totalEarnings ?? "0"}</Text>
           </View>
         </View>
 
