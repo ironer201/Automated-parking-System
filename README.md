@@ -1,11 +1,16 @@
 <div align="center">
 
-# 🅿️ **SPACICO**
-### *Smart RFID-Based Parking Management System*
+# 🅿️ SPACICO
+### Smart RFID-Based Parking Management System
 
-**A full-stack IoT parking management solution — from embedded hardware to cloud database to mobile app to marketing website.**
+**A full-stack IoT platform I built end-to-end: embedded firmware → cloud backend → mobile app → marketing site.**
 
-[Key Features](#-key-features) · [Architecture](#-system-architecture) · [Tech Stack](#-tech-stack) · [Components](#-project-components) · [Getting Started](#-getting-started) · [Contact](#-team)
+[![Made with ESP32](https://img.shields.io/badge/Hardware-ESP32-black?logo=espressif)](#-hardware-layer)
+[![Python](https://img.shields.io/badge/Backend-Python%203-blue?logo=python)](#-backend-layer)
+[![React Native](https://img.shields.io/badge/Mobile-React%20Native%20%2B%20Expo-61DAFB?logo=react)](#-mobile-app-layer)
+[![Supabase](https://img.shields.io/badge/Database-Supabase%20(PostgreSQL)-3ECF8E?logo=supabase)](#-database-schema)
+
+[Overview](#-overview) · [What I Built](#-what-i-built) · [Architecture](#-system-architecture) · [Tech Stack](#-tech-stack) · [Components](#-project-components) · [Getting Started](#-getting-started) · [Team](#-team)
 
 </div>
 
@@ -13,11 +18,21 @@
 
 ## 📌 Overview
 
-**Spacico** is a comprehensive, RFID-gated parking management platform designed for private parking facilities — residential complexes, office buildings, and commercial lots. It integrates **embedded IoT hardware**, a **cloud-synced Python backend**, a **cross-platform mobile app**, and a **modern marketing website** into a single, cohesive ecosystem.
+**Spacico** is a full-stack IoT parking management platform for private facilities — residential complexes, offices, and commercial lots. It replaces manual entry/exit logging with **RFID-gated, zero-touch access control**, synced in real time to a cloud database and surfaced through a mobile app for both drivers and lot owners.
 
-The system enables **automated entry/exit tracking** using RFID cards, **real-time occupancy monitoring** via a cloud database, **parking spot discovery and booking** through a mobile app, and **owner analytics dashboards** — all with a zero-human-intervention workflow.
+I was the **Lead Developer**, responsible for the entire technical stack: designing and wiring the embedded hardware, writing the ESP32 firmware, building the Python-to-cloud integration layer, and developing the majority of the React Native mobile app. This was a year-long university capstone (Integrated Design Project) built with a 3-person team, where I owned software and hardware while teammates led project coordination and UI/UX design.
 
-> **Built as an Integrated Design Project (IDP)** — a year-long university capstone project by a team of 3 engineering students.
+---
+
+## 🛠 What I Built
+
+This project isn't a tutorial clone — every layer was designed and implemented from scratch to solve a real integration problem: getting a $10 RFID reader to talk reliably to a cloud database and a mobile app, with no existing framework connecting the two.
+
+- **Designed the hardware-to-cloud pipeline** — wrote the serial protocol connecting an ESP32 + MFRC522 RFID reader to a Python backend, then to Supabase, with local JSON caching so the system keeps working through network drops.
+- **Solved entry/exit state without extra hardware** — a single RFID tap needs to mean "enter" the first time and "exit" the second, with no separate gates or sensors. I implemented this as a toggle-based state machine driven entirely by a boolean flag in the database, with automatic duration and timestamp tracking.
+- **Built the real-time sync layer** — the mobile app, backend, and owner dashboard all read from the same Supabase tables, so an entry scanned at the gate reflects instantly in the app with no polling hacks.
+- **Shipped a 14-screen React Native app** — authentication, GPS-based parking discovery (Leaflet + Haversine distance filtering), a full booking flow with 6 payment methods, vehicle registration, and an owner analytics dashboard showing live occupancy and earnings.
+- **Modeled a 7-table relational schema** in PostgreSQL supporting users, bookings, vehicles, live occupancy records, and aggregated owner analytics.
 
 ---
 
@@ -79,26 +94,26 @@ The system enables **automated entry/exit tracking** using RFID cards, **real-ti
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│                          SPACICO ECOSYSTEM                          │
+│                          SPACICO ECOSYSTEM                           │
 ├──────────────────────────────────────────────────────────────────────┤
-│                                                                      │
+│                                                                        │
 │   ┌─────────────┐    Serial     ┌──────────────┐    HTTPS    ┌──────────────┐
-│   │   ESP32 +   │◄────────────►│   Python     │◄───────────►│   Supabase   │
-│   │   MFRC522   │   UART 9600  │   Backend    │   REST API  │  (PostgreSQL)│
-│   │  RFID Card  │              │              │             │  Cloud DB    │
-│   └─────────────┘              └──────────────┘             └──────┬───────┘
-│                                                                     │
-│                                    ┌───────────────┐               │
-│                                    │  React Native │    Real-time   │
-│                                    │  Mobile App   │◄──────────────►│
-│                                    │  (Expo/RN)    │               │
-│                                    └───────────────┘               │
-│                                                                     │
-│                                    ┌───────────────┐               │
-│                                    │   Marketing   │    Static     │
-│                                    │   Website     │◄──────────────►│
-│                                    │  (HTML/CSS/JS)│   Pages       │
-│                                    └───────────────┘               │
+│   │   ESP32 +   │◄─────────────►│   Python     │◄───────────►│   Supabase   │
+│   │   MFRC522   │   UART 9600   │   Backend    │   REST API  │  (PostgreSQL)│
+│   │  RFID Card  │               │              │             │  Cloud DB    │
+│   └─────────────┘               └──────────────┘             └──────┬───────┘
+│                                                                       │
+│                                    ┌───────────────┐                 │
+│                                    │  React Native │    Real-time    │
+│                                    │  Mobile App   │◄────────────────►
+│                                    │  (Expo/RN)    │                 │
+│                                    └───────────────┘                 │
+│                                                                       │
+│                                    ┌───────────────┐                 │
+│                                    │   Marketing   │    Static       │
+│                                    │   Website     │◄────────────────►
+│                                    │  (HTML/CSS/JS)│                 │
+│                                    └───────────────┘                 │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -195,7 +210,7 @@ echo "SUPABASE_URL=your_supabase_url" > .env
 echo "SUPABASE_KEY=your_supabase_anon_key" >> .env
 
 # Run the main RFID processing script
-python Python.txt
+python Python.py
 ```
 
 ### Mobile App Setup
@@ -219,7 +234,7 @@ eas build --platform android --profile preview
 ```bash
 # Simply open index.html in any modern browser
 # No build step required — pure static files
-open Website/"Updated version"/index.html
+open "Website/Updated version/index.html"
 ```
 
 ### Hardware Wiring
@@ -310,6 +325,22 @@ The marketing website features a **dark cyberpunk aesthetic** with:
 
 ---
 
+## 📈 Skills Demonstrated
+
+| Category | Skills |
+|---|---|
+| **Embedded Systems** | ESP32 programming, SPI protocol, RFID/NFC, sensor integration, serial communication |
+| **Backend Development** | Python, REST API integration, cloud database management, JSON caching |
+| **Mobile Development** | React Native, Expo, TypeScript, cross-platform UI, navigation patterns |
+| **Frontend Development** | HTML5, CSS3, vanilla JavaScript, responsive design, CSS animations |
+| **Database Design** | PostgreSQL (via Supabase), relational schema design, real-time data sync |
+| **Mapping & Geolocation** | OpenStreetMap, Leaflet.js, GPS integration, Haversine distance formula |
+| **Authentication** | Supabase Auth, session management, login event tracking |
+| **DevOps & Build** | EAS Build, Metro bundler, environment configuration |
+| **System Integration** | IoT-to-cloud pipeline, multi-component architecture, protocol design |
+
+---
+
 ## 👥 Team
 
 <table>
@@ -337,24 +368,6 @@ The marketing website features a **dark cyberpunk aesthetic** with:
 
 ---
 
-## 📈 Skills Demonstrated
-
-> **This project showcases proficiency across the full technology spectrum:**
-
-| Category | Skills |
-|---|---|
-| **Embedded Systems** | ESP32 programming, SPI protocol, RFID/NFC, sensor integration, serial communication |
-| **Backend Development** | Python, REST API integration, cloud database management, JSON caching |
-| **Mobile Development** | React Native, Expo, TypeScript, cross-platform UI, navigation patterns |
-| **Frontend Development** | HTML5, CSS3, vanilla JavaScript, responsive design, CSS animations |
-| **Database Design** | PostgreSQL (via Supabase), relational schema design, real-time data sync |
-| **Mapping & Geolocation** | OpenStreetMap, Leaflet.js, GPS integration, Haversine distance formula |
-| **Authentication** | Supabase Auth, session management, login event tracking |
-| **DevOps & Build** | EAS Build, Metro bundler, environment configuration |
-| **System Integration** | IoT-to-cloud pipeline, multi-component architecture, protocol design |
-
----
-
 ## 📜 License
 
 This project was developed as part of the **Integrated Design Project (IDP)** coursework.
@@ -367,6 +380,6 @@ This project was developed as part of the **Integrated Design Project (IDP)** co
 
 *From soldering circuits to shipping mobile apps — this is what full-stack means.*
 
-![Visitor Count](https://komarev.com/ghpvc/?username=spacico&color=green&style=flat-square)
+![Visitor Count](https://komarev.com/ghpvc/?username=spacico-idp&color=0f9d58&style=flat-square)
 
 </div>
