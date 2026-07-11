@@ -136,10 +136,10 @@ The system enables **automated entry/exit tracking** using RFID cards, **real-ti
 
 | File | Description |
 |---|---|
-| `C Code.txt` | ESP32 firmware — RFID card reading/writing, LED feedback, serial protocol |
-| `Python.txt` | Main orchestration script — bridges ESP32 to Supabase cloud, handles entry/exit logic |
-| `rfid_write.txt` | Utility to encode phone numbers onto blank RFID cards |
-| `COM_Finder.txt` | Diagnostic tool to identify the ESP32's COM port |
+| `C Code.c` | ESP32 firmware — RFID card reading/writing, LED feedback, serial protocol |
+| `Python.py` | Main orchestration script — bridges ESP32 to Supabase cloud, handles entry/exit logic |
+| `rfid_write.py` | Utility to encode phone numbers onto blank RFID cards |
+| `COM_Finder.py` | Diagnostic tool to identify the ESP32's COM port |
 
 **Key Logic:** Toggle-based entry/exit system — first scan = entry, second scan = exit. Automatically tracks duration, updates aggregate statistics, and provides LED feedback.
 
